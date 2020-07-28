@@ -382,7 +382,7 @@ tinymce.init({
 <?php } else { ?>
       <td bgcolor="#cce0ff"><?php echo $row_msg['status']; ?></td>
 <?php } ?>
-      <td bgcolor="#cce0ff"><textarea name="msg" id="msg" class="msg" ><?php echo $row_msg['msg']; ?></textarea></td>
+      <td bgcolor="#cce0ff"><textarea cols="60" readonly> <?php echo $row_msg['msg']; ?></textarea></td>
     <?php $date = date_create($row_msg['entrydt']);?>
       <td align="center" bgcolor="#cce0ff" nowrap><?php echo date_format($date,'M-d-Y'); ?><br><?php echo date_format($date,'h:s A'); ?></td>
     </tr>
@@ -460,7 +460,7 @@ if($row_msg['urgent'] == 'R'){
 <?php if($row_msg['openflag'] == 'Y'){?>
       <td align="center" bgcolor="#ececec" class="flagWhiteonBlue"><a href=index.php?msgid=<?php echo $row_msg['id']; ?>&openflag=Y class="flagWhiteonBlue"> Click to open new message </a></td>
 <?php } else {?>
-      <td bgcolor=<?php echo $bgcol ?>><textarea style="line-height:20px" name="msg" id="msg" class="msg"><?php echo $row_msg['msg']; ?></textarea></td>
+      <td bgcolor=<?php echo $bgcol ?>><textarea cols="60" readonly> <?php echo $row_msg['msg']; ?></textarea></td>
 <?php } ?>
 <!--select links to be displayed accordint to current selected status-->
 <?php if($row_msg['status'] == 'new'){?>      

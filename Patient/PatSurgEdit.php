@@ -262,12 +262,12 @@ $('#scheddt').datetimepicker({
 </head>
 <body>
 
-<div align="right"> <span class="Black_12">Visit Date: </span><span class="BlackBold_16"><?php echo $row_surgupdate['visitdate'] ?></span><?php echo str_repeat("&nbsp;", 40);?> <span class="BlueBold_24">UPDATE SURGERY</span> 
+<div align="right"> <span class="Black_12">Visit Date: </span><span class="BlackBold_16"><?php echo $row_surgupdate['visitdate'] ?></span><?php echo str_repeat("&nbsp;", 15);?> <span class="BlueBold_24">UPDATE SURGERY</span> 
          <!--  link to Anesthersia page-->
-        <span><?php echo str_repeat("&nbsp;", 50);?>
-        <a href="PatShow1.php?mrn=<?php echo $row_surgupdate['medrecnum'] ?>&vid=<?php echo $row_surgupdate['visitid'] ?>&sid=<?php echo $row_surgupdate['sid'] ?>&visit=PatVisitView.php&act=lab&pge=PatAnestPreopEdit.php"  style="background-color:green; border-color:blue; color:white; text-align:center; border-radius:5px;">Anest Preop</a></span>&nbsp;&nbsp;
-        <span><a href="PatShow1.php?mrn=<?php echo $row_surgupdate['medrecnum'] ?>&vid=<?php echo $row_surgupdate['visitid'] ?>&sid=<?php echo $row_surgupdate['sid'] ?>&visit=PatVisitView.php&act=lab&pge=PatAnestIntraopEdit.php" style="background-color:yellow; border-color:blue; color:black; text-align:center;border-radius:5px;">Anest Intraop</a></span>&nbsp;&nbsp;
-        <span><a href="PatShow1.php?mrn=<?php echo $row_surgupdate['medrecnum'] ?>&vid=<?php echo $row_surgupdate['visitid'] ?>&sid=<?php echo $row_surgupdate['sid'] ?>&visit=PatVisitView.php&act=lab&pge=PatAnestPostopEdit.php" style="background-color:orange; border-color:blue; color:white; text-align:center; border-radius:5px;">Anest Postop</a></span>
+        <span><?php echo str_repeat("&nbsp;", 15);?></span>
+        <span><a href="PatShow1.php?mrn=<?php echo $row_surgupdate['medrecnum'] ?>&vid=<?php echo $row_surgupdate['visitid'] ?>&sid=<?php echo $row_surgupdate['sid'] ?>&visit=PatVisitView.php&act=lab&pge=PatAnestPreopEdit.php"  style="background-color:green; border-color:blue; color:white; text-align:center; border-radius:5px;" class="BlueBold_24">Anest Preop</a></span>&nbsp;&nbsp;
+        <span><a href="PatShow1.php?mrn=<?php echo $row_surgupdate['medrecnum'] ?>&vid=<?php echo $row_surgupdate['visitid'] ?>&sid=<?php echo $row_surgupdate['sid'] ?>&visit=PatVisitView.php&act=lab&pge=PatAnestIntraopEdit.php" style="background-color:yellow; border-color:blue; color:black; text-align:center;border-radius:5px;" class="BlueBold_24">Anest Intraop</a></span>&nbsp;&nbsp;
+        <span><a href="PatShow1.php?mrn=<?php echo $row_surgupdate['medrecnum'] ?>&vid=<?php echo $row_surgupdate['visitid'] ?>&sid=<?php echo $row_surgupdate['sid'] ?>&visit=PatVisitView.php&act=lab&pge=PatAnestPostopEdit.php" style="background-color:orange; border-color:blue; color:white; text-align:center; border-radius:5px;" class="BlueBold_24">Anest Postop</a></span>
 </div>
 <table bgcolor="#f9d2f9">
   <tr>
@@ -285,7 +285,7 @@ $('#scheddt').datetimepicker({
               <?php if($totalRows_allsurg == 0){?>
               <td nowrap="nowrap" class="RedBold_24"> ALL are Complete</td>
              <?php  } else {?>
-                <td title=""><select name="sids" size="5" onChange="document.sidselect.submit();">&nbsp;
+                <td><select name="sids" size="5" onChange="document.sidselect.submit();">&nbsp;
                <?php
       do {  
       ?>

@@ -227,7 +227,7 @@ if($row_msg['urgent'] == 'R'){
       <?php if($row_msg['openflag'] == 'Y'){?>
       <td align="center" bgcolor="#ececec" class="flagWhiteonBlue"><a href=MsgPopUp.php?msgid=<?php echo $row_msg['id']; ?>&openflag=Y class="flagWhiteonBlue"> Click to open new message </a></td>
 <?php } else {?>
-      <td bgcolor=<?php echo $bgcol ?>><textarea name="msg" id="msg"> <?php echo $row_msg['msg']; ?></textarea></td>
+      <td bgcolor=<?php echo $bgcol ?>><textarea cols="60" readonly> <?php echo $row_msg['msg']; ?></textarea></td>
 <?php } ?>
 <!--select links to be displayed accordint to current selected status-->
 <?php if($row_msg['status'] == 'new'){?>      

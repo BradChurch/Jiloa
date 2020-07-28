@@ -56,7 +56,7 @@ $totalRows_myfee = mysql_num_rows($myfee);
   $updateSQL = sprintf("UPDATE orders SET status=%s, billstatus=%s, amtdue=%s, entryby=%s, entrydt=%s, comments=%s WHERE id=%s",
                        GetSQLValueString($_POST['status'], "text"),
                        GetSQLValueString($_POST['billstatus'], "text"),
-                       GetSQLValueString(0, "int"),
+GetSQLValueString(0, "int"),
                        GetSQLValueString($_POST['entryby'], "text"),
                        GetSQLValueString($_POST['entrydt'], "date"),
                        GetSQLValueString($_POST['comments'], "text"),
