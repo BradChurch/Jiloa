@@ -1,6 +1,6 @@
 <?php ob_start(); ?>
-<?php //date_default_timezone_set('AMERICA/DETROIT')?>
-<?php date_default_timezone_set('AFRICA/LAGOS')?>
+<?php date_default_timezone_set('AMERICA/DETROIT')?>
+<?php //date_default_timezone_set('AFRICA/LAGOS')?>
 <?php if (session_status() == PHP_SESSION_NONE) {
     session_start();
 } ?>

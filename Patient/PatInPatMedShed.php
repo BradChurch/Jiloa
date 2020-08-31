@@ -36,7 +36,7 @@ $editFormAction = $_SERVER['PHP_SELF'];
 if (isset($_SERVER['QUERY_STRING'])) {
   $editFormAction .= "?" . htmlentities($_SERVER['QUERY_STRING']);
 }
-
+// check that form was submitted and the start date and time are entered
 if (isset($_POST['SubmitAll']) AND $_POST['SubmitAll']  == 'Schedule' AND !empty($_POST['scheddt']) AND !empty($_POST['schedtime']))  {
   
 	$schedt = strtotime($_POST['scheddt'].' '.$_POST['schedtime']);
@@ -214,7 +214,7 @@ function out(){
           <td colspan="5" nowrap="nowrap"><textarea name="comments" cols="60" rows="2" id="comments"  readonly="readonly"> <?php echo $row_ordered['comments']; ?></textarea></td>
         </tr>
         <tr>
-      <td nowrap="nowrap">Select date &amp; time to create schedule.</td>
+      <td nowrap="nowrap">Select date &amp; time to start the schedule.</td>
       <td  align="right" nowrap="nowrap">
 	  <input id="scheddt" name="scheddt" type="text" size="12" maxlength="15"></td>
       <td  align="right" nowrap="nowrap">Begin
@@ -236,9 +236,26 @@ function out(){
     </form></td>
   </tr>
 </table>
-<script type="text/javascript" src="../../nogray_js/1.2.2/ng_all.js"></script>
-<script type="text/javascript" src="../../nogray_js/1.2.2/components/calendar.js"></script>
-<script type="text/javascript" src="../../nogray_js/1.2.2/components/timepicker.js"></script>
+
+<p>&nbsp;</p>
+
+<table>
+	<tr>
+  	<td>
+     Note:  When OD, Nocte, PRN, or STAT are ordered, the internally assigned date/time scheduled is every 24 hrs beginning with the start date/time. </td>
+  </tr>
+  <tr>
+     <td>				For BD, every 12 hrs, for TDS, every 8 hrs, for QDS every 6 hrs, beginning with the start date/time.
+    </td>
+  </tr>
+</table>
+
+<p>
+  <script type="text/javascript" src="../../nogray_js/1.2.2/ng_all.js"></script>
+  <script type="text/javascript" src="../../nogray_js/1.2.2/components/calendar.js"></script>
+  <script type="text/javascript" src="../../nogray_js/1.2.2/components/timepicker.js"></script>
+</p>
+
 <script type="text/javascript">
 ng.ready( function() {
     var my_cal = new ng.Calendar({
@@ -249,7 +266,6 @@ ng.ready( function() {
     });   
 });
 
-</script>
-
+  </script>
 </body>
 </html>

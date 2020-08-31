@@ -56,13 +56,15 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 <body>
 <table width="80%" border="1">
   <tr>
-    <td>Medications (Hover on medication for tool tip order comments.) </td>
+    <td colspan="2">Medications (Hover on medication for tool tip order comments.) </td>
     <td>&nbsp;</td>
     <td>Dispense (Hover on medication for tool tip medication comments.) </td>
   </tr>
   <tr>
     <td><input name="item" id="item" size="20" class="btngradblu100" value="ALL" onclick="parent.location='PatShow1.php?mrn=<?php echo $_SESSION['mrn']; ?>&vid=<?php echo $_SESSION['vid']; ?>&visit=PatVisitView.php&act=inpat&pge=PatInPatMeds.php&medid=%'" />
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orders (Blue = Un-Scheduled), (Green = Selected) </td>
+    </td>
+    <td>Orders<em> <strong>Font</strong></em><strong>:</strong> Blue = Un-Scheduled, Green = Scheduled<br />
+    <em><strong>Background:</strong></em> Green = Selected </td>
     <td>--</td>
 <?php 	mysql_select_db($database_swmisconn, $swmisconn);
 	$query_ctsched = "Select count(id) mmid from ipmeds where orderid = '".$colname_medid."' and status = 'ordered'";
@@ -71,14 +73,14 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 	$totalRows_ctsched = mysql_num_rows($ctsched);
 ?>
 <?php if($colname_medid <> '%' and $row_ctsched['mmid'] > 0 and allow(41,3) == 1){ ?>
-    <td> <a href="javascript:void(0)" onclick="MM_openBrWindow('PatInPatMedReShed.php?ordid=<?php echo $colname_medid; ?>','StatusView','scrollbars=yes,resizable=yes,width=950,height=600')">Reschedule  <?php echo $row_medsched['med'] ?></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="javascript:void(0)" onclick="MM_openBrWindow('PatInPatMedDiscont.php?ordid=<?php echo $colname_medid; ?>','StatusView','scrollbars=yes,resizable=yes,width=800,height=250')">Discontinue  <?php echo $row_medsched['med'] ?></a> </td>
+    <td> <a href="javascript:void(0)" onclick="MM_openBrWindow('PatInPatMedReShed.php?ordid=<?php echo $colname_medid; ?>','StatusView','scrollbars=yes,resizable=yes,width=950,height=600')"><strong>Reschedule:</strong> <span class="BlackBold_12"><?php echo $row_medsched['med'] ?></span></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong> <a href="javascript:void(0)" onclick="MM_openBrWindow('PatInPatMedDiscont.php?ordid=<?php echo $colname_medid; ?>','StatusView','scrollbars=yes,resizable=yes,width=800,height=250')">Discontinue:</a></strong><a href="javascript:void(0)" class="BlackBold_12" onclick="MM_openBrWindow('PatInPatMedDiscont.php?ordid=<?php echo $colname_medid; ?>','StatusView','scrollbars=yes,resizable=yes,width=800,height=250')"> <?php echo $row_medsched['med'] ?></a> </td>
 <?php } else {?>
     <td>&nbsp;</td>
 <?php }?>
 
   </tr>
   <tr>
-    <td valign="top">
+    <td colspan="2" valign="top">
 	  <table>
        <?php do { //check to se if it is scheduled
 	   mysql_select_db($database_swmisconn, $swmisconn);
@@ -88,9 +90,9 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 		$totalRows_sched = mysql_num_rows($sched);
 		
 		// change med bkg color if not scheuled
-		    $bkds="btngradgrn";
+		    $bkds="btngradblu100";
 		if($row_sched['mmid'] > 0){
-			$bkds="btngradblu100";
+			$bkds="btngradgrn";
 		}
 	   
 			$bkgd="#F5F5F5";
@@ -99,7 +101,7 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 		} 
 	   ?>
 	     <tr>
-		   <td bgcolor="<?php echo $bkgd ?>" title="Order#: <?php echo $row_ordered['id']; ?>&#10; Doctor: <?php echo $row_ordered['doctor']; ?>&#10; EntryDt: <?php echo $row_ordered['entrydt']; ?>&#10; EntryBy: <?php echo $row_ordered['entryby']; ?>&#10; Order Comments: <?php echo $row_ordered['comments']; ?>"><input name="item2" id="item2" size="20" class="<?php echo $bkds; ?>" value="<?php echo $row_ordered['item']; ?>" onclick="parent.location='PatShow1.php?mrn=<?php echo $_SESSION['mrn']; ?>&vid=<?php echo $_SESSION['vid']; ?>&visit=PatVisitView.php&act=inpat&pge=PatInPatMeds.php&medid=<?php echo $row_ordered['id']; ?>'" /></td>
+		   <td bgcolor="<?php echo $bkgd ?>" title="Order#: <?php echo $row_ordered['id']; ?>&#10; Doctor: <?php echo $row_ordered['doctor']; ?>&#10; EntryDt: <?php echo $row_ordered['entrydt']; ?>&#10; EntryBy: <?php echo $row_ordered['entryby']; ?>&#10; Order Comments: <?php echo $row_ordered['comments']; ?>&#10;Class <?php echo $bkds; ?>"><input name="item2" id="item2" size="20" class="<?php echo $bkds; ?>" value="<?php echo $row_ordered['item']; ?>" onclick="parent.location='PatShow1.php?mrn=<?php echo $_SESSION['mrn']; ?>&vid=<?php echo $_SESSION['vid']; ?>&visit=PatVisitView.php&act=inpat&pge=PatInPatMeds.php&medid=<?php echo $row_ordered['id']; ?>'" /></td>
 		   <!--adding type="button" centers the text-->
 		<td nowrap="nowrap" bgcolor="<?php echo $bkgd ?>"><input name="nunits" type="text" id="nunits" size="1" disabled="disabled" class="center" Value="<?php echo $row_ordered['nunits']; ?>" />
 		  <input name="unit" type="text" id="unit" size="5" disabled="disabled" Value="<?php echo $row_ordered['unit']; ?>" />
@@ -149,9 +151,9 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 			}
 ?>
 <?php if(strpos("OD Nocte BD TDS QDS PRN STAT ", $row_medsched['evperiod'])>0) {?>
-        <td bgcolor="<?php echo $dtbkgd ?>" nowrap="nowrap"><?php echo date('D M-d',$row_medsched['schedt']) .'  '.$row_medsched['evperiod']; ?></td>
+        <td bgcolor="<?php echo $dtbkgd ?>" nowrap="nowrap" title="<?php echo date('D M-d h:i A',$row_medsched['schedt']); ?>"><?php echo date('D M-d',$row_medsched['schedt']) .'  '.$row_medsched['evperiod']; ?></td>
 <?php } else {?>
-        <td bgcolor="<?php echo $dtbkgd ?>" nowrap="nowrap"><?php echo date('D M-d H:i',$row_medsched['schedt']); ?>
+        <td bgcolor="<?php echo $dtbkgd ?>" nowrap="nowrap"><?php echo date('D M-d h:i A',$row_medsched['schedt']); ?>
 <?php }?>
 	    <td nowrap="nowrap" bgcolor="<?php echo $stbkgd ?>" title="ID: <?php echo $row_medsched['id']; ?>&#10;VisitID: <?php echo $row_medsched['visitid']; ?>&#10;OrderID: <?php echo $row_medsched['orderid']; ?>&#10;EntryDt: <?php echo $row_medsched['entrydt']; ?>&#10;EntryBy: <?php echo $row_medsched['entryby']; ?>&#10;Medication Comments: <?php echo $row_medsched['comments']; ?>"><?php echo $row_medsched['med']; ?></td>
 	    <td bgcolor="<?php echo $stbkgd ?>"><?php echo $row_medsched['nunits']; ?></td>
@@ -163,12 +165,19 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
 	    <td bgcolor="<?php echo $stbkgd ?>"><?php echo $row_medsched['comments']; ?></td>  
 <?php   } 		?>
 	    </tr>
-      <?php } while ($row_medsched = mysql_fetch_assoc($medsched)); 
-	 } else { ?>
+			<?php } while ($row_medsched = mysql_fetch_assoc($medsched)); 
+			
+	 } else {
+      if($colname_medid == '%'){ ?>
+       <tr>
+        <td></td>
+      </tr>
+			<?php	 } else { ?>
       <tr>
         <td><a href="javascript:void(0)" onclick="MM_openBrWindow('PatInPatMedShed.php?vid=<?php echo $_SESSION['vid']; ?>&ordid=<?php echo $colname_medid; ?>','StatusView','scrollbars=yes,resizable=yes,width=950,height=500')">Schedule</a> </td>
       </tr>
-      <?php	 }?>
+      <?php	 }
+	 } ?>
     </table></td>
   </tr>
 </table>

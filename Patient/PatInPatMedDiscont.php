@@ -136,8 +136,9 @@ function out(){
           <td nowrap="nowrap"><textarea name="comments" cols="60" rows="2" id="comments"></textarea></td>
         </tr>
         <tr>
-          <td colspan="3" nowrap="nowrap">Currently scheduled medications will have Discontinued Status. Discontinued By:
-		    <select name="givenby" id="givenby">
+          <td colspan="3" align="right" nowrap="nowrap">Currently scheduled medications with status of 'ordered' will have 'discontinued' Status.<br />
+Discontinued By:
+<select name="givenby" id="givenby">
 <?php do { ?>
 		  <option value="<?php echo $row_users['userid']?>"<?php if (!(strcmp(trim($_SESSION['user']), $row_users['userid']))) {echo "selected=\"selected\"";} ?>><?php echo $row_users['userid']?></option>
 					  <?php
@@ -148,7 +149,8 @@ function out(){
 			  $row_users = mysql_fetch_assoc($users);
 		  }
 ?>
-            </select>            <input name="SubmitAll" type="submit" style="background-color:aqua; border-color:blue; color:black;text-align: center;border-radius: 4px;" value="discontinue" /></td>
+            </select>
+        <input name="SubmitAll" type="submit" style="background-color:aqua; border-color:blue; color:black;text-align: center;border-radius: 4px;" value="discontinue" /></td>
           </tr>
         <input name="ordid" type="hidden" id="ordid" value="<?php echo $row_ordered['ordid']; ?>" />
         <input type="hidden" name="status" value="discontinued"/>
