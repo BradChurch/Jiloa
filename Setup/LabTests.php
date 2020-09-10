@@ -4,8 +4,14 @@
 <?php require_once($_SERVER['DOCUMENT_ROOT'].$_SESSION['sysconn']); ?>
 
 <?php
+if (isset($_GET['sort'])) {
+  $colname_sort = (get_magic_quotes_gpc()) ? $_GET['sort'] : addslashes($_GET['sort']);
+	}
+else
+$colname_sort = "test";
+
 mysql_select_db($database_swmisconn, $swmisconn);
-$query_tests = "SELECT t.id tid, t.feeid1, t.feeid2, t.feeid3, t.feeid4, t.feeid5, t.feeid6, t.feeid7, t.feeid8, t.feeid9, t.feeid0, t.test, t.description, t.formtype, t.ddl, t.units, t.reportseq, t.flag1, t.active, t.entrydt, t.entryby, (select name from fee Where id = t.feeid1) as name1, (select name from fee Where id = t.feeid2) as name2, (select name from fee Where id = t.feeid3) as name3, (select name from fee Where id = t.feeid4) as name4, (select name from fee Where id = t.feeid5) as name5, (select name from fee Where id = t.feeid6) as name6, (select name from fee Where id = t.feeid7) as name7, (select name from fee Where id = t.feeid8) as name8, (select name from fee Where id = t.feeid9) as name9, (select name from fee Where id = t.feeid0) as name0, (select name from fee Where id = t.feeidA) as nameA, (select name from fee Where id = t.feeidB) as nameB, (select name from fee Where id = t.feeidC) as nameC, (select name from fee Where id = t.feeidD) as nameD, (select name from fee Where id = t.feeidE) as nameE, (select name from fee Where id = t.feeidF) as nameF, (select name from fee Where id = t.feeidG) as nameG, (select name from fee Where id = t.feeidH) as nameH, (select name from fee Where id = t.feeidI) as nameI, (select name from fee Where id = t.feeidJ) as nameJ, (select name from fee Where id = t.feeidK) as nameK, (select name from fee Where id = t.feeidL) as nameL, (select name from fee Where id = t.feeidM) as nameM, (select name from fee Where id = t.feeidN) as nameN FROM tests t ORDER BY name1, t.reportseq ASC";
+$query_tests = "SELECT t.id tid, t.feeid1, t.feeid2, t.feeid3, t.feeid4, t.feeid5, t.feeid6, t.feeid7, t.feeid8, t.feeid9, t.feeid0, t.test, t.description, t.formtype, t.ddl, t.units, t.reportseq, t.flag1, t.active, t.entrydt, t.entryby, (select name from fee Where id = t.feeid1) as name1, (select name from fee Where id = t.feeid2) as name2, (select name from fee Where id = t.feeid3) as name3, (select name from fee Where id = t.feeid4) as name4, (select name from fee Where id = t.feeid5) as name5, (select name from fee Where id = t.feeid6) as name6, (select name from fee Where id = t.feeid7) as name7, (select name from fee Where id = t.feeid8) as name8, (select name from fee Where id = t.feeid9) as name9, (select name from fee Where id = t.feeid0) as name0, (select name from fee Where id = t.feeidA) as nameA, (select name from fee Where id = t.feeidB) as nameB, (select name from fee Where id = t.feeidC) as nameC, (select name from fee Where id = t.feeidD) as nameD, (select name from fee Where id = t.feeidE) as nameE, (select name from fee Where id = t.feeidF) as nameF, (select name from fee Where id = t.feeidG) as nameG, (select name from fee Where id = t.feeidH) as nameH, (select name from fee Where id = t.feeidI) as nameI, (select name from fee Where id = t.feeidJ) as nameJ, (select name from fee Where id = t.feeidK) as nameK, (select name from fee Where id = t.feeidL) as nameL, (select name from fee Where id = t.feeidM) as nameM, (select name from fee Where id = t.feeidN) as nameN FROM tests t ORDER BY ".$colname_sort."";
 $tests = mysql_query($query_tests, $swmisconn) or die(mysql_error());
 $row_tests = mysql_fetch_assoc($tests);
 $totalRows_tests = mysql_num_rows($tests);
@@ -28,22 +34,22 @@ $totalRows_tests = mysql_num_rows($tests);
 	 <table width="100%">
       <tr>
         <td colspan="3"><div align="center"><a href="LabTests.php?act=LabTestAdd.php">Add</a></div></td>
-        <td colspan="3" class="subtitlebl"><div align="center">Lab Tests </div></td>
+        <td colspan="3" class="subtitlebl"><div align="center">Lab Tests &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (&#x2191;=asc,&nbsp; &#x2193;=desc sort)</div></td>
         <td colspan="4" class="subtitlebl"><div align="center"><a href="SetUpMenu.php" class="navLink">Setup Menu</a></div></td>
         <td class="subtitlebl">&nbsp;</td>
       </tr>
       <tr>
         <td class="subtitlebl">&nbsp;</td>
         <td class="subtitlebl">&nbsp;</td>
-        <td class="subtitlebl"><div align="center">id</div></td>
+        <td class="subtitlebl"><div align="center">id<a href="LabTests.php?sort=id ASC">&nbsp;&#x2191;</a><a href="LabTests.php?sort=id DESC">&nbsp;&#x2193;</a></div></td>
         <td class="subtitlebl"><div align="center">fee id-name</div></td>
-        <td class="subtitlebl"><div align="center">test</div></td>
+        <td class="subtitlebl"><div align="center">test<a href="LabTests.php?sort=test ASC">&nbsp;&#x2191;</a><a href="LabTests.php?sort=test DESC">&nbsp;&#x2193;</a></div></td>
         <td class="subtitlebl"><div align="center">reportseq</div></td>
-        <td class="subtitlebl"><div align="center">units</div></td>
-        <td class="subtitlebl"><div align="center">formtype</div></td>
-        <td class="subtitlebl">ddl</td>
-        <td class="subtitlebl"><div align="center">flag1</div></td>
-        <td class="subtitlebl"><div align="center">active</div></td>
+        <td class="subtitlebl"><div align="center">units<a href="LabTests.php?sort=units ASC">&nbsp;&#x2191;</a><a href="LabTests.php?sort=units DESC">&nbsp;&#x2193;</a></div></td>
+        <td class="subtitlebl"><div align="center">formtype<a href="LabTests.php?sort=formtype ASC">&nbsp;&#x2191;</a><a href="LabTests.php?sort=formtype DESC">&nbsp;&#x2193;</a></div></td>
+        <td class="subtitlebl"><div align="center">ddl<a href="LabTests.php?sort=ddl ASC">&nbsp;&#x2191;</a><a href="LabTests.php?sort=ddl DESC">&nbsp;&#x2193;</a></td>
+        <td class="subtitlebl"><div align="center">flag1<a href="LabTests.php?sort=flag1 ASC">&nbsp;&#x2191;</a><a href="LabTests.php?sort=flag1 DESC">&nbsp;&#x2193;</a></div></td>
+        <td class="subtitlebl"><div align="center">active<a href="LabTests.php?sort=active ASC">&nbsp;&#x2191;</a><a href="LabTests.php?sort=active DESC">&nbsp;&#x2193;</a></div></td>
         <td class="subtitlebl">entrydt</td>
         <td class="subtitlebl">entryby</td>
       </tr>

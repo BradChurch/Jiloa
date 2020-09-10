@@ -4,10 +4,10 @@
 
 <?php
 if(!function_exists("GetSQLValueString")) {
-	function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "") 
-	{
-	  $theValue = (!get_magic_quotes_gpc()) ? addslashes($theValue) : $theValue;
-	
+  function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "") 
+  {
+    $theValue = (!get_magic_quotes_gpc()) ? addslashes($theValue) : $theValue;
+  
 	  switch ($theType) {
 		case "text":
 		  $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
@@ -57,8 +57,10 @@ if(!function_exists("GetSQLValueString")) {
  ?>
 
 <?php
+    
 if (isset($_GET['ordid'])) {
   $colname_ordid = (get_magic_quotes_gpc()) ? $_GET['ordid'] : addslashes($_GET['ordid']);
+
 mysql_select_db($database_swmisconn, $swmisconn);
 
 $query_ordered = "SELECT o.id, o.id ordid, o.medrecnum, o.visitid, o.item, o.nunits, o.unit, o.every, o.evperiod, o.fornum, o.forperiod, o.quant, DATE_FORMAT(o.entrydt,'%d%b%y %H:%i') entrydt, o.entryby, o.amtpaid, o.comments FROM orders o WHERE o.id = ".$colname_ordid."";
