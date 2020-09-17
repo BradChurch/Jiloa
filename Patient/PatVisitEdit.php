@@ -177,17 +177,66 @@ $totalRows_typ_loc = mysql_num_rows($typ_loc);
   mysql_select_db($database_swmisconn, $swmisconn);
   $Result1 = mysql_query($updateSQL, $swmisconn) or die(mysql_error());
   } ?> 
-<!--RULE 4 Order antenatal lab tests if location = AnteBooking and not previously ordered (get count from booking query)-->
 
-  <?php 	if($row_typ_loc['section'] == 'Antenatal' AND $row_typ_loc['name'] == 'AnteBooking ' and $_POST['booking']== 0)  {  // 
+<!-- ******************************************************************************************************************************-->
+<!--RULE 5 -if vist location changes from AnteBooking to a different location, delete lab orders-->
+<?php 
+ 		if(trim($origlocation) == "AnteBooking" && $newpat_type != 'InPatient' && trim($newlocation) != "AnteBooking" && $_POST['amtpaid'] == 0){  
+  //echo $origlocation .' - '. $newlocation.' -- ' .$row_preupdt['medrecnum'].' -- ' .$row_preupdt['vid']; exit;
 	   $ante = array(
-		   "0" => "24",
+		   "0" => "51",
 		   "1" => "36",   
 		   "2" => "37",   
 		   "3" => "32",   
 		   "4" => "33",   
 		   "5" => "15",   
-		   "6" => "73",   
+		   "6" => "466",   
+	   );
+    	$N = count($ante);
+//    echo("You selected $N order(s): ");
+		for($j=0; $j < $N; $j++) {  //loop to add orders
+		
+       mysql_select_db($database_swmisconn, $swmisconn);
+         $deleteOrdSQL = "Delete FROM orders WHERE medrecnum = ".$row_preupdt['medrecnum']." and visitid = ".$row_preupdt['vid']." and feeid = ".$ante[$j];
+       mysql_select_db($database_swmisconn, $swmisconn);
+       $Result1 = mysql_query($deleteOrdSQL, $swmisconn) or die(mysql_error());		
+    } //  FOR loop
+   } 	// if AnteBooking
+?>
+<!-- ******************************************************************************************************************************-->
+<!--RULE 5A -if vist location changes from AnteBooking to a different location, delete lab orders-->
+<?php 
+ 		if(trim($origlocation) == "AnteFollowUp" && $newpat_type != 'InPatient' && trim($newlocation) != "AnteFollowup" && $_POST['amtpaid'] == 0){  
+  //echo $origlocation .' - '. $newlocation.' -- ' .$row_preupdt['medrecnum'].' -- ' .$row_preupdt['vid']; exit;
+	   $ante = array(
+		   "0" => "51",
+		   "1" => "466",   
+	   );
+    	$N = count($ante);
+//    echo("You selected $N order(s): ");
+		for($j=0; $j < $N; $j++) {  //loop to add orders
+		
+       mysql_select_db($database_swmisconn, $swmisconn);
+         $deleteOrdSQL = "Delete FROM orders WHERE medrecnum = ".$row_preupdt['medrecnum']." and visitid = ".$row_preupdt['vid']." and feeid = ".$ante[$j];
+       mysql_select_db($database_swmisconn, $swmisconn);
+       $Result1 = mysql_query($deleteOrdSQL, $swmisconn) or die(mysql_error());		
+    } //  FOR loop
+   } 	// if AnteBooking
+?>
+
+
+<!-- ******************************************************************************************************************************-->
+<!--RULE 4 Order antenatal lab tests if location = AnteBooking and not previously ordered (get count from booking query)-->
+
+  <?php 	if($row_typ_loc['section'] == 'Antenatal' AND $row_typ_loc['name'] == 'AnteBooking ' and $_POST['booking']== 0)  {  // 
+	   $ante = array(
+		   "0" => "51",
+		   "1" => "36",   
+		   "2" => "37",   
+		   "3" => "32",   
+		   "4" => "33",   
+		   "5" => "15",   
+		   "6" => "466",   
 	   );
     	$N = count($ante);
 //    echo("You selected $N order(s): ");
@@ -221,31 +270,48 @@ $totalRows_typ_loc = mysql_num_rows($typ_loc);
    } 	// if antenatal
 
 ?>
-<!--RULE 5 -if vist location changes from AnteBooking to a different location, delete lab orders-->
-<?php 
- 		if(trim($origlocation) == "AnteBooking" && $newpat_type != 'InPatient' && trim($newlocation) != "AnteBooking" && $_POST['amtpaid'] == 0){  
-  //echo $origlocation .' - '. $newlocation.' -- ' .$row_preupdt['medrecnum'].' -- ' .$row_preupdt['vid']; exit;
+<!-- ******************************************************************************************************************************-->
+<!--RULE 4A Order antenatal lab tests if location = AnteBooking and not previously ordered (get count from booking query)-->
+
+  <?php 	if($row_typ_loc['section'] == 'Antenatal' AND $row_typ_loc['name'] == 'AnteFollowUp ' and $_POST['followup']== 0)  {  // 
 	   $ante = array(
-		   "0" => "24",
-		   "1" => "36",   
-		   "2" => "37",   
-		   "3" => "32",   
-		   "4" => "33",   
-		   "5" => "15",   
-		   "6" => "73",   
+		   "0" => "51",
+		   "1" => "466",   
 	   );
     	$N = count($ante);
 //    echo("You selected $N order(s): ");
 		for($j=0; $j < $N; $j++) {  //loop to add orders
-		
-       mysql_select_db($database_swmisconn, $swmisconn);
-         $deleteOrdSQL = "Delete FROM orders WHERE medrecnum = ".$row_preupdt['medrecnum']." and visitid = ".$row_preupdt['vid']." and feeid = ".$ante[$j];
-       mysql_select_db($database_swmisconn, $swmisconn);
-       $Result1 = mysql_query($deleteOrdSQL, $swmisconn) or die(mysql_error());		
+
+	mysql_select_db($database_swmisconn, $swmisconn);
+	$query_aFee = sprintf("SELECT fee from fee where id = '".$ante[$j]."'");
+	$aFee = mysql_query($query_aFee, $swmisconn) or die(mysql_error());
+	$row_aFee = mysql_fetch_assoc($aFee);
+	$totalRows_aFee = mysql_num_rows($aFee);
+	
+	$amtdue = $row_aFee['fee']*($_POST['rate']/100); 	
+	
+	$insertSQL = sprintf("INSERT INTO orders (medrecnum, visitid, feeid, rate, ratereason, amtdue, amtpaid, billstatus, status, urgency, entryby, entrydt) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                       GetSQLValueString($_POST['medrecnum'], "text"),
+                       GetSQLValueString($_POST['vid'], "int"),
+                       $ante[$j],
+                       GetSQLValueString($_POST['rate'], "int"),
+                       GetSQLValueString($_POST['ratereason'], "text"),
+                       GetSQLValueString($amtdue, "int"),
+                       GetSQLValueString(0, "int"),
+                       GetSQLValueString($_POST['billstatus'], "text"),
+                       GetSQLValueString($_POST['ordstatus'], "text"),
+                       GetSQLValueString($_POST['urgency'], "text"),
+                       GetSQLValueString($_POST['entryby'], "text"),
+                       GetSQLValueString($_POST['entrydt'], "date"));
+
+  mysql_select_db($database_swmisconn, $swmisconn);
+  $Result1 = mysql_query($insertSQL, $swmisconn) or die(mysql_error());
     } //  FOR loop
-   } 	// if AnteBooking
+   } 	// if antenatal
+
 ?>
 
+<<!-- ******************************************************************************************************************************-->
 <!--  RULE 6 - if location is Circumcision, add surgery order and lotion from Pharmacy -->
 <!-- DO WE NEED TO CREATE A SURGERY RECORD ???  NO-->
 <?php 		if(trim($origlocation) != "Circumcision" && trim($newlocation) == "Circumcision"){  // location Circumcision has a space after it in fee table setup
@@ -303,6 +369,7 @@ $totalRows_typ_loc = mysql_num_rows($typ_loc);
    } 	// if circumcision
 
 ?>
+<!-- ******************************************************************************************************************************-->
 <!--RULE 7 - if location changes from Circumcision to a different location, delete surgery order and lotion from Pharmacy  -->
 <!--  WHAT IF IT IS ALREADY PAID????-->
 
@@ -413,14 +480,19 @@ if(isset($_POST['surgery2']) && $_POST['surgery2'] == 'on'){
 
 <!--  Update complete -- Display patient again-->
 <?php   $updateGoTo = "PatShow1.php?mrn=".$_SESSION['mrn']."& vid=".$_SESSION['vid']."&disp=on";
-//  if (isset($_SERVER['QUERY_STRING'])) {
-//    $updateGoTo .= (strpos($updateGoTo, '?')) ? "&" : "?";
-//    $updateGoTo .= $_SERVER['QUERY_STRING'];
-//  }
+
+//echo $row_typ_loc['name'].'<br>'; 
+//echo $_POST['booking'].'<br>';
+//echo $_POST['followup'].'<br>';
+//echo trim($origlocation.'<br>');
+//echo trim($newlocation).'<br>';
+//exit;
+
   header(sprintf("Location: %s", $updateGoTo));
   } 
 
 ?>
+<!-- ******************************************************************************************************************************-->
 <!--**************************************  begin display queries ************************************-->
 <?php   // get current visit data
 $colid_visitedit = "-1";
@@ -490,10 +562,17 @@ $row_locations = mysql_fetch_assoc($locations);
 
 <?php 
 mysql_select_db($database_swmisconn, $swmisconn);
-$query_booking = "SELECT o.id ordid FROM orders o join PATVISIT v ON o.visitid = v.id where o.visitid = '".$colid_visitedit."' and (o.feeid = 24 or o.feeid = 36)";
+$query_booking = "SELECT o.id ordid FROM orders o join PATVISIT v ON o.visitid = v.id where o.visitid = '".$colid_visitedit."' and v.location = 'AnteBooking' and (o.feeid = 32 or o.feeid = 33)";
 $booking = mysql_query($query_booking, $swmisconn) or die(mysql_error());
 $row_booking = mysql_fetch_assoc($booking);
 $totalRows_booking = mysql_num_rows($booking);
+?>
+<?php 
+mysql_select_db($database_swmisconn, $swmisconn);
+$query_followup = "SELECT o.id ordid FROM orders o join PATVISIT v ON o.visitid = v.id where o.visitid = '".$colid_visitedit."' and v.location = 'AnteFollowUp' and (o.feeid = 51 or o.feeid = 466)";
+$followup = mysql_query($query_followup, $swmisconn) or die(mysql_error());
+$row_followup = mysql_fetch_assoc($followup);
+$totalRows_followup = mysql_num_rows($followup);
 ?>
 
 
@@ -752,6 +831,7 @@ $totalRows_booking = mysql_num_rows($booking);
 
      			  	<input name="billstatus" type="hidden" id="billstatus" value="Due" />
          		  <input name="booking" type="hidden" id="booking" value="<?php echo $totalRows_booking ?>" />
+         		  <input name="followup" type="hidden" id="followup" value="<?php echo $totalRows_followup ?>" />
           		<input name="rate" type="hidden" id="rate" value="<?php echo $row_visitedit['rate']; ?>" />
 		          <input name="ratereason" type="hidden" id="ratereason" value="<?php echo $row_visitedit['ratereason']; ?>" />
 		          <input name="status" type="hidden" id="status" value="<?php echo $row_visitedit['status']; ?>" />

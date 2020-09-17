@@ -141,13 +141,54 @@ $amtdue = $row_Fee['fee']*($_POST['rate']/100);
 // if Antenatal:booking
 	if($row_typ_loc['section'] == 'Antenatal' AND $row_typ_loc['name'] == 'AnteBooking ')  {
 	   $ante = array(
-		   "0" => "24",
+		   "0" => "51",
 		   "1" => "36",   
 		   "2" => "37",   
 		   "3" => "32",   
 		   "4" => "33",   
 		   "5" => "15",   
-		   "6" => "73",   
+		   "6" => "466",   
+	   );
+    	$N = count($ante);
+//    echo("You selected $N order(s): ");
+		for($j=0; $j < $N; $j++) {  //loop to add orders
+		
+	mysql_select_db($database_swmisconn, $swmisconn);
+	$query_aFee = sprintf("SELECT fee from fee where id = '".$ante[$j]."'");
+	$aFee = mysql_query($query_aFee, $swmisconn) or die(mysql_error());
+	$row_aFee = mysql_fetch_assoc($aFee);
+	$totalRows_aFee = mysql_num_rows($aFee);
+	
+	$amtdue = $row_aFee['fee']*($_POST['rate']/100); 	
+
+	
+	  $insertSQL = sprintf("INSERT INTO orders (medrecnum, visitid, feeid, rate, ratereason, amtdue, amtpaid, billstatus, status, urgency, doctor, comments, entryby, entrydt) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                       GetSQLValueString($_POST['medrecnum'], "text"),
+                       $row_NewVisitid['newvisitid'],
+                       $ante[$j],
+                       GetSQLValueString($_POST['rate'], "int"),
+                       GetSQLValueString($_POST['ratereason'], "text"),
+                       GetSQLValueString($amtdue, "int"),
+                       GetSQLValueString(0, "int"),
+                       GetSQLValueString($_POST['billstatus'], "text"),
+                       GetSQLValueString($_POST['lordstatus'], "text"),
+                       GetSQLValueString($_POST['urgency'], "text"),
+                       GetSQLValueString($_POST['doctor'], "text"),
+                       GetSQLValueString($_POST['comments'], "text"),
+                       GetSQLValueString($_POST['entryby'], "text"),
+                       GetSQLValueString($_POST['entrydt'], "date"));
+
+  mysql_select_db($database_swmisconn, $swmisconn);
+  $Result1 = mysql_query($insertSQL, $swmisconn) or die(mysql_error());
+
+		 // echo($N.' - '.$ante[$j] . " ");
+    } //  FOR loop
+   } 
+// if Antenatal:booking
+	if($row_typ_loc['section'] == 'Antenatal' AND $row_typ_loc['name'] == 'AnteFollowUp ')  {
+	   $ante = array(
+		   "0" => "51",
+		   "1" => "466",   
 	   );
     	$N = count($ante);
 //    echo("You selected $N order(s): ");
@@ -184,6 +225,7 @@ $amtdue = $row_Fee['fee']*($_POST['rate']/100);
 		 // echo($N.' - '.$ante[$j] . " ");
     } //  FOR loop
    } 	
+//<!--********************************************circumcision***************************************************-->	 	
 //echo $row_typ_loc['section'];
 //echo $row_typ_loc['name'];
 //exit;
