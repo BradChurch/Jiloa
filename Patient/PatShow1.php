@@ -297,19 +297,27 @@ $totalRows_surgs = mysql_num_rows($surgs);
     <!-- display LAB RESULT button -->
     <td><input type="button" name="button" class="btngradblu75" value="Lab Results" onclick="parent.location='PatShow1.php?mrn=<?php echo $_SESSION['mrn']; ?>&vid=<?php echo $_SESSION['vid']; ?>&visit=PatVisitView.php&act=lab&pge=PatLabResults.php'" /></td>
 
-    <!-- display Orders button -->
+<!-- display Orders button -->
     <?php if(allow(30,1) == 1) { ?>
     <td><div align="center">
       <input type="button" name="button" class="btngradblu50" value=" Orders " onclick="parent.location='PatShow1.php?mrn=<?php echo $_SESSION['mrn']; ?>&vid=<?php echo $_SESSION['vid']; ?>&visit=PatVisitView.php&act=hist&pge=PatOrdersView.php'" />
     </div></td>
     <?php }?>
-    <?php //if($row_lastvisit['pat_type'] == "OutPatient"){ ?>
+<!-- display All Notes-->
     <td><input type="button" name="button6222" class="btngradblu75" value="AllNotes (<?php echo $row_allnotes['notes']; ?>)" onclick="parent.location='PatShow1.php?mrn=<?php echo $_SESSION['mrn']; ?>&vid=<?php echo $_SESSION['vid']; ?>&visit=PatVisitView.php&act=inpat&pge=PatNotesView.php&notetype=%'" /></td>
+<!-- display PDV view-->
     <td><input type="button" name="button4" class="btngradblu55" value="PDFs(<?php echo $z; ?>)" onclick="parent.location='PatShow1.php?mrn=<?php echo $_SESSION['mrn']; ?>&vid=<?php echo $_SESSION['vid']; ?>&visit=PatVisitView.php&act=PDF&pge=PatPDFView.php'" /></td>
 
-    <?php //} ?>
-  <?php } ?>   <!--end of inpatient in bed condition -->
-<?php //} ?> 
+<!-- display POC Select-->
+    <?php
+		// if(allow(30,1) == 1) { ?>
+    <td><div align="center">
+      <input type="button" name="button" class="btngradblu50" value=" POC " onclick="parent.location='PatShow1.php?mrn=<?php echo $_SESSION['mrn']; ?>&vid=<?php echo $_SESSION['vid']; ?>&visit=PatVisitView.php&act=poc&pge=POCSelect.php'" />
+    </div></td>
+    <?php //}?>
+
+  <?php } ?>   <!--end of inpatient in bed condition ELSE -->
+ 
 
   </tr>
 </table> 
@@ -420,6 +428,9 @@ $totalRows_surgs = mysql_num_rows($surgs);
 			$actapp = $_GET['pge'];
 		} 
 		if ($_GET['act'] == 'inpat'){
+				$actapp = $_GET['pge'];
+		} 
+		if ($_GET['act'] == 'poc'){
 				$actapp = $_GET['pge'];
 		} 
 ?>
