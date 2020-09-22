@@ -7,6 +7,11 @@ $orders = mysql_query($query_orders, $swmisconn) or die(mysql_error());
 $row_orders = mysql_fetch_assoc($orders);
 $totalRows_orders = mysql_num_rows($orders);
 
+$query_fbs = "SELECT r.ordid, r.feeid, r.testid, r.result, r.normflag, DATE_FORMAT(r.entrydt,'%d-%m-%y') entrydt, DATE_FORMAT(r.entrydt,'%H:%i') entrytime, o.medrecnum, o.visitid FROM results r join orders o on o.id = r.ordid WHERE o.medrecnum = 13882 AND r.testid = 50 ORDER BY o.medrecnum DESC, r.entrydt ASC";
+$fbs = mysql_query($query_fbs, $swmisconn) or die(mysql_error());
+$row_fbs = mysql_fetch_assoc($fbs);
+$totalRows_fbs = mysql_num_rows($fbs);
+
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -26,6 +31,23 @@ $totalRows_orders = mysql_num_rows($orders);
           <td width ="110px" colspan="2" nowrap="nowrap"> <a href="PatShow1.php?mrn=<?php echo $_SESSION['mrn']; ?>&vid=<?php echo $_SESSION['vid']; ?>&visit=PatVisitView.php">Close</a>&nbsp;&nbsp;&nbsp;<a href="PatLabResPrt.php?mrn=<?php echo $_SESSION['mrn']; ?>&vid=<?php echo $_SESSION['vid']; ?>&visit=PatVisitView.php">Print</a></td>
           <td width ="340px" colspan="3" nowrap="nowrap"><h1 align="center">Laboratory Results page </h1></td>
           <td width ="550px">&nbsp;</td>
+        </tr>
+      </table>
+      <table bgcolor="#FFFFFF">
+        <tr>
+        	<td title="FBS, date and time resulted&#10;(Day-Month-Year)&#10;For All Visits">
+          	For<br />ALL<br />Visits
+          </td>
+        	<td title="FBS, date and time resulted&#10;(Day-Month-Year)&#10;For All Visits">
+          	<span class="BlueBold_18">FBS</span>*<br />Date<br />Time
+          </td>
+		  <?php do { ?>
+      	<td align="center">
+        	<?php echo $row_fbs['result'] ?> <br />	<?php echo $row_fbs['entrydt']?> <br />	<?php echo $row_fbs['entrytime']?> 
+        </td>
+  
+      <?php } while ($row_fbs = mysql_fetch_assoc($fbs)); ?>
+  
         </tr>
       </table>
     </td><!--1-->
@@ -49,6 +71,7 @@ $totalRows_orders = mysql_num_rows($orders);
       </table>
     </td><!--1-->
   </tr>
+  
   <tr>
   	<td><!--2-->
 	  <table>

@@ -1,6 +1,7 @@
 <?php  $pt = "Setup Menu"; ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/Len/Jiloa/Master/Header.php'); ?> 
-<?php require_once($_SERVER['DOCUMENT_ROOT'].$_SESSION['sysconn']); ?>
+<?php //require_once($_SERVER['DOCUMENT_ROOT'].$_SESSION['sysconn']); ?>
+<?php require_once('../../Connections/swmisconn.php'); ?>
 <?php $_SESSION['CurrDateTime'] = date("Y-m-d  H:i"); ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -72,7 +73,7 @@
   </tr>
 <?php if($_SESSION['user'] == 'GRACE ADMIN' || 'L.GABRIELSE'){?>
   <tr>
-    <td bgcolor="#FFFFFF" class="BlueBold_14"><a href="../Development/DevProjectView.php">Development Tracking</a></td>
+    <td bgcolor="#FFFFFF" class="BlueBold_14"><a href="../../Development/DevProjectView.php">Development Tracking</a></td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
   </tr>
