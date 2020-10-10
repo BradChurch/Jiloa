@@ -98,7 +98,7 @@
     <td>&nbsp;</td>
   </tr>
   <tr>
-    <td>&nbsp;</td>
+    <td bgcolor="#FFFFFF" class="BlueBold_14"><a href="CommunityStats.php">CommunityStats</a></td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
   </tr>

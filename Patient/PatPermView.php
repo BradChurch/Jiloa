@@ -28,7 +28,7 @@ else {
 	}
 }
 mysql_select_db($database_swmisconn, $swmisconn);
-$query_patperm = "SELECT pp.medrecnum, pp.hospital, pp.active, DATE_FORMAT(pp.ddate,'%d-%b-%Y') ddate, pp.entrydt, pp.entryby, pp.lastname, pp.firstname, pp.othername, pp.gender, pp.ethnicgroup, pp.est, pp.dob, pp.photofile, pi.id FROM patperm pp left outer join patinfo pi on pp.medrecnum = pi.medrecnum where pp.medrecnum = '".$colname_patperm."'";
+$query_patperm = "SELECT pp.medrecnum, pp.hospital, pp.active, DATE_FORMAT(pp.ddate,'%d-%b-%Y') ddate, pp.entrydt, pp.entryby, pp.lastname, pp.firstname, pp.othername, pp.gender, pp.ethnicgroup, pp.est, pp.dob, pp.photofile, pp.employeegroup, pp.employeemrn, pi.id FROM patperm pp left outer join patinfo pi on pp.medrecnum = pi.medrecnum where pp.medrecnum = '".$colname_patperm."'";
 $patperm = mysql_query($query_patperm, $swmisconn) or die(mysql_error());
 $row_patperm = mysql_fetch_assoc($patperm);
 $totalRows_patperm = mysql_num_rows($patperm);
@@ -221,6 +221,16 @@ function MM_openBrWindow(theURL,winName,features) { //v2.0
         <?php }?>
         </tr>
       </table>
+    </td>
+		<td bgcolor="##336699">&nbsp;&nbsp;&nbsp;</td>
+    
+<?php if(!empty($row_patperm['employeegroup'])){
+					if($row_patperm['employeemrn'] > 2) {?>
+    <td title="This is designation of Employee Group.&#10;e.g. PH = Peace House, CA = Calvary Arrows, etc. &#10; * indicates this patient is a dependent of someone in this group"bgcolor="#e6f2ff"><span class="BlueBold_18"><?php echo $row_patperm['employeegroup'] ?>*</span>
+	<?php } else {?>
+    <td title="This is designation of Employee Group.&#10;e.g. PH = Peace House, CA = Calvary Arrows, etc."  bgcolor="#e6f2ff"><span class="BlueBold_18"><?php echo $row_patperm['employeegroup'] ?></span>
+<?php }
+}?>
     </td>
   </tr>
 </table>
