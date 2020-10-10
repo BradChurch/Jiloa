@@ -33,7 +33,6 @@ $editFormAction = $_SERVER['PHP_SELF'];
 if (isset($_SERVER['QUERY_STRING'])) {
   $editFormAction .= "?" . htmlentities($_SERVER['QUERY_STRING']);
 }
-
  $colname_feeid = -1;
 if (isset($_POST['feeid'])) {
   $colname_feeid = (get_magic_quotes_gpc()) ? $_POST['feeid'] : addslashes($_POST['feeid']);
@@ -119,7 +118,7 @@ echo 'amtdue:'.$amtdue.'<br>';
 		}
       }
 // insert results int results table	
-  $insertSQL = sprintf("INSERT INTO results (testid, feeid, ordid, `result`, normflag, entryby, entrydt) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+  $insertSQL = sprintf("INSERT INTO results (testid, feeid, ordid, result, normflag, entryby, entrydt) VALUES (%s, %s, %s, %s, %s, %s, %s)",
                        GetSQLValueString($_POST['tid'.$row_addtests['tid']], "int"),
                        GetSQLValueString($_POST['feeid'], "int"),
                        GetSQLValueString($row_maxid['mxoid'], "int"),
@@ -146,26 +145,37 @@ echo 'amtdue:'.$amtdue.'<br>';
 } // end if feeid
 ?>
 
+<!--end of action *****************************************************************
+***********************************************************************************
+begin display ******************************************************************-->
 
+<!--POCSelect sends mrn, vid, feeid, and nameof test in URL-->
 <?php
  $colname_feeid = -1;
 if (isset($_GET['feeid'])) {
   $colname_feeid = (get_magic_quotes_gpc()) ? $_GET['feeid'] : addslashes($_GET['feeid']);
 	}
-
+// select individual tests for the ordered test
 mysql_select_db($database_swmisconn, $swmisconn);
-//$query_tests = "SELECT o.id ordid, o.doctor, o.feeid, o.comments, t.id, t.test, t.description, t.formtype, t.ddl, t.units, t.reportseq, t.active, p.gender, DATE_FORMAT(p.dob,'%d-%b-%Y') dob, DATE_FORMAT(FROM_DAYS(DATEDIFF(CURRENT_DATE,p.dob)),'%y') AS age FROM tests t join orders o on o.feeid in (t.feeid1, t.feeid2, t.feeid3, t.feeid4, t.feeid5, t.feeid6, t.feeid7, t.feeid8, t.feeid9, t.feeid0, t.feeidA, t.feeidB, t.feeidC, t.feeidD, t.feeidE, t.feeidF, t.feeidG, t.feeidH, t.feeidI, t.feeidJ, t.feeidK, t.feeidL, t.feeidM, t.feeidN ) join patperm p on o.medrecnum = p.medrecnum WHERE t.active = 'Y' and o.id ='".$colname_ordid."' ORDER BY reportseq ";
 $query_tests = "SELECT t.id tid, t.test, t.description, t.formtype, t.ddl, t.units, t.reportseq, t.active FROM tests t Where '".$colname_feeid."' in (t.feeid1, t.feeid2, t.feeid3, t.feeid4, t.feeid5, t.feeid6, t.feeid7, t.feeid8, t.feeid9, t.feeid0, t.feeidA, t.feeidB, t.feeidC, t.feeidD, t.feeidE, t.feeidF, t.feeidG, t.feeidH, t.feeidI, t.feeidJ, t.feeidK, t.feeidL, t.feeidM, t.feeidN ) and t.active = 'Y' and flag1 is null ORDER BY reportseq ";
 $atests = mysql_query($query_tests, $swmisconn) or die(mysql_error());
 $row_atests = mysql_fetch_assoc($atests);
 $totalRows_atests = mysql_num_rows($atests);
 
+// Select patient perm information from mrn
 $query_patinfo = "SELECT p.gender, DATE_FORMAT(p.dob,'%d-%b-%Y') dob, DATE_FORMAT(FROM_DAYS(DATEDIFF(CURRENT_DATE,p.dob)),'%y') AS age FROM patperm p  WHERE  p.medrecnum = '".$_GET['mrn']."'";
 $patinfo = mysql_query($query_patinfo, $swmisconn) or die(mysql_error());
 $row_patinfo = mysql_fetch_assoc($patinfo);
 $totalRows_patinfo = mysql_num_rows($patinfo);
 
+// Select orders for current visit and ordered tests
+$query_orders = "SELECT o.id ordid, o.feeid, o.entrydt, o.amtpaid FROM orders o join fee f on f.id = o.feeid WHERE o.medrecnum = '".$_GET['mrn']."' and o.visitid = '".$_GET['vid']."' and o.feeid = '".$_GET['feeid']."'";
+$orders = mysql_query($query_orders, $swmisconn) or die(mysql_error());
+$row_orders = mysql_fetch_assoc($orders);
+$totalRows_orders = mysql_num_rows($orders);
+
 ?>
+
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -173,61 +183,68 @@ $totalRows_patinfo = mysql_num_rows($patinfo);
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <title>Untitled Document</title>
 <link href="../../CSS/Level3_1.css" rel="stylesheet" type="text/css" />
+
+<!--Define background colors for use in this program-->
 <style type="text/css">
 option.ltyellow {background-color:#FFFDDA}
 option.red {background-color:red}
 option.blue {background-color:blue}
 option.white {background-color:white}
 </style>
+
+<!-- define JS script to open a popup window-->
+<script language="JavaScript" type="text/JavaScript">
+  function MM_openBrWindow(theURL,winName,features) { //v2.0
+    var win_position = ',left=400,top=5,screenX=400,screenY=5';
+    var newWindow = window.open(theURL,winName,features+win_position);
+    newWindow.focus();
+  }
+</script>
+
 </head>
 
 <body>
 <table width="80%">
   <tr>
+  	<!--add links to Menu and Close POCT  and Display large header-->
   	<td colspan="6"><div align="center" class="BlueBold_24"><a href="PatShow1.php?mrn=<?php echo $_SESSION['mrn']; ?>&vid=<?php echo $_SESSION['vid']; ?>&visit=PatVisitView.php&act=poc&pge=POCSelect.php" class="nav">Menu</a> <a href="PatShow1.php?mrn=<?php echo $_GET['mrn'] ?>&vid=<?php echo $_GET['vid'] ?>" class="nav">Close</a> Add POC Test Results</div></td>
   </tr>
   <tr>
-    <td> 
+    <td align="top"> 
 	 <form name="form1" id="form1" method="POST" action="<?php echo $editFormAction; ?>">
        <table bgcolor="#BCFACC">
-        <tr>
-          <td nowrap="nowrap" class="Black_12"><strong><em>P</em></strong>oint<em><strong>O</strong></em>f<strong><em>C</em></strong>are</td>
-          <td class="BlackBold_12"><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></td>
-          <td class="BlackBold_12"><div align="right"><strong>&nbsp;DOB: </strong></div></td>
-          <td class="BlackBold_12"><strong><?php echo $row_patinfo['dob']; ?></strong></td>
-          <td colspan="2" nowrap="nowrap" class="BlackBold_12"><strong> Age: <?php echo $row_patinfo['age']; ?></strong></td>
-          <td colspan="3" class="BlackBold_12"><strong> Gender: <?php echo $row_patinfo['gender']; ?></strong></td>
-        </tr>
+				<!--display orderid, test name, and Point of Care label-->
         <tr>
           <td class="BlackBold_12"><!--Ord#:<?php echo $_GET['ordid']; ?>--></td>
-          <td class="BlackBold_12"><?php echo $row_atests['description']; ?></td>
-          <td class="BlackBold_12"><div align="right">Doctor:</div></td>
-          <td colspan="2" class="BlackBold_12"></td>
-          <td colspan="2" class="BlackBold_12"></td>
-          <td class="BlackBold_12"></td>
+          <td class="BlackBold_12"><?php echo $row_atests['test']; ?></td>
+          <td colspan="2"></td>
+          <td nowrap="nowrap" class="Black_12"><strong><em>P</em></strong>oint<em><strong>O</strong></em>f<strong><em>C</em></strong>are</td>
+          <td></td>
         </tr>
+        <!-- display table header-->
         <tr>
           <td>test</td>
           <td>Result </td>
           <td>units</td>
           <td colspan="2"><div align="center">Normal</div></td>
           <td colspan="2"><div align="center">Panic</div></td>
-          <td>Interpretation</td>
         </tr>
-        <?php do { ?>
+        <!--Display test(s) for ordered test-->
+				<?php do { ?>
         <tr>
           <td nowrap="nowrap" title="Fee ID: <?php echo $colname_feeid; ?>&#10;TestID: <?php echo $row_atests['tid']; ?>&#10;Description: <?php echo $row_atests['description']; ?>&#10;Form Type: <?php echo $row_atests['formtype']; ?>&#10Report Seq: <?php echo $row_atests['reportseq']; ?>"><?php echo $row_atests['test']; ?></td>
-
+  <!--Select how to display data inputs if TextField or DropDown form type-->
 <?php if ($row_atests['formtype'] == 'TextField') { ?>
           <td><input name="<?php echo 'result'.$row_atests['tid']; ?>" type="text" id="<?php echo 'result'.$row_atests['tid']; ?>" maxlength="30" autocomplete="off" /></td>
 <?php } else if ($row_atests['formtype'] == 'DropDown') { 
+		// find values for dropdown list
 		mysql_select_db($database_swmisconn, $swmisconn);
 		$query_ddl = "Select list, name, seq from dropdownlist where list = '".$row_atests['ddl']."' Order By seq";
 		$ddl = mysql_query($query_ddl, $swmisconn) or die(mysql_error());
 		$row_ddl = mysql_fetch_assoc($ddl);
 		$totalRows_ddl = mysql_num_rows($ddl);
 ?>
-
+<!--Dropdown list for ordered test-->
 		<td><select type="text"  name="<?php echo 'result'.$row_atests['tid']; ?>" id="<?php echo 'result'.$row_atests['tid']; ?>" >
 <?php if(isset($row_atests['ddl']) && $row_atests['ddl'] == 'Antibiotic') { ?>
 	<option class="ltyellow" value="Not Tested">Not Tested</option>
@@ -246,10 +263,11 @@ option.white {background-color:white}
 ?>
 </select></td>
 <?php } ?>
-
+	        <!--display units for this test-->
           <td><?php echo $row_atests['units']; ?></td>
 		  <input type="hidden" id="<?php echo 'tid'.$row_atests['tid']; ?>" name="<?php echo 'tid'.$row_atests['tid']; ?>" autocomplete="off" value="<?php echo $row_atests['tid']; ?>" />
 
+	        <!--display abnormal value flags for this test-->
 <?php 
 	mysql_select_db($database_swmisconn, $swmisconn); // look up normal ranges
 	$query_norms = "Select normlow, normhigh, paniclow, panichigh, interpretation from testnormalvalues where testid = '".$row_atests['tid']."' AND instr(gender,'".$row_patinfo['gender']."') > 0 AND '".$row_patinfo['age']."' >= agemin AND '".$row_patinfo['age']."' <= agemax"; 
@@ -260,13 +278,12 @@ option.white {background-color:white}
           <td colspan="2" nowrap="nowrap" bgcolor="#80ff80"><?php echo $row_norms['normlow']; ?>-<?php echo $row_norms['normhigh']; ?></td>
           <td nowrap="nowrap" bgcolor="#ffcccccc">&lt;<?php echo $row_norms['paniclow']; ?></td>
           <td nowrap="nowrap" bgcolor="#ffcccccc">&gt;<?php echo $row_norms['panichigh']; ?></td>
-          <td bgcolor="#ffffff"><?php echo $row_norms['interpretation']; ?></td>
 		  <td><div align="center">
 			   <input type="hidden" id="<?php echo 'PL'.$row_atests['tid']; ?>" name="<?php echo 'PL'.$row_atests['tid']; ?>"value="<?php echo $row_norms['paniclow']; ?>" />
 			   <input type="hidden" id="<?php echo 'NL'.$row_atests['tid']; ?>" name="<?php echo 'NL'.$row_atests['tid']; ?>"value="<?php echo $row_norms['normlow']; ?>" />
 			   <input type="hidden" id="<?php echo 'NH'.$row_atests['tid']; ?>" name="<?php echo 'NH'.$row_atests['tid']; ?>"value="<?php echo $row_norms['normhigh']; ?>" />
 			   <input type="hidden" id="<?php echo 'PH'.$row_atests['tid']; ?>" name="<?php echo 'PH'.$row_atests['tid']; ?>"value="<?php echo $row_norms['panichigh']; ?>" />
-
+					<!--Define Hidden Values-->
 			   <input name="doctor" type="hidden" value="NA" />
 			   <input name="medrecnum" type="hidden" value="<?php echo $_GET['mrn'] ?>" />
 			   <input name="visitid" type="hidden" value="<?php echo $_GET['vid'] ?>" />
@@ -280,17 +297,125 @@ option.white {background-color:white}
 			$ordcomments = "";
 
 		 	} while ($row_atests = mysql_fetch_assoc($atests)); ?>
-		<tr>
+				<tr>
+					<!-- Add comments to order-->
           <td>Order<br />
             Comments:</td>
-          <td colspan="7"><textarea name="comments" cols="50" rows="2"><?php echo $ordcomments ?></textarea></td>
-		</tr>
-	   </table>
-		       <input name="submit" type="submit" style="background-color:aqua; border-color:blue; color:black;text-align: center;border-radius: 4px;" value="SAVE" />
+          <td colspan="5"><textarea name="comments" cols="50" rows="2"><?php echo $ordcomments ?></textarea></td>
+					<!-- Add SAVE button-->
+          <td><input name="submit" type="submit" style="background-color:aqua; border-color:blue; color:black;text-align: center;border-radius: 4px;" value="SAVE" />																				 					</td>
+				</tr>
+			</table>
       </form>
-	</td>
+		</td>
+
+<!--Display previous results for this visit if test is dipstick 11-->   
+<?php if($row_orders['feeid'] == 466){ ?>
+	<!--Loop to display previous orders-->
+  <?php do {?>
+<?php
+    // query results of tests
+ 		$query_result = "SELECT r.id rid, r.result, r.normflag, r.entrydt, r.ordid, t.test FROM results r join tests t on r.testid = t.id WHERE r.ordid = '".$row_orders['ordid']."' and '".$row_orders['feeid']."' = 466";
+		$result = mysql_query($query_result, $swmisconn) or die(mysql_error());
+		$row_result = mysql_fetch_assoc($result);
+		$totalRows_result = mysql_num_rows($result);
+?>   
+    <td valign="top">
+    	<table  bgcolor="#faebd7">
+      	<tr>
+ 	<!--//date format requires creating a variable--> 
+  <?php $date=date_create($row_result['entrydt'])  ?>
+				<!--Display header for results-->
+        <td title="Order ID: <?php echo $row_orders['ordid'];?>&#10;Fee ID: <?php echo $row_orders['feeid'];?>&#10;GetFee ID: <?php echo $_GET['feeid'];?>"colspan="3" align="center" nowrap class="BlueBold_14">Previous Results<br />for this visit<br /><span class="BlackBold_14"> <?php echo date_format($date, 'D M d, Y'); ?></span><br /><span class="Black_11"><?php echo date_format($date, 'h:i a'); ?></span></td>
+	      </tr>
+<!--Loop to display resulted Dipstick tests-->        
+<?php do { ?>
+      	<tr>
+<!--Add time limit to Edit Result-->
+<?php if(strtotime(Date('Y-m-d H:i:s')) - strtotime($row_orders['entrydt']) < 3600  && ($row_orders['amtpaid'] == 0 OR is_null($row_orders['amtpaid']) )) { ?>
+					<!--Link to Edit result-->
+          <td bgcolor="FFFDDA"><a href="javascript:void(0)" onclick="MM_openBrWindow('POCREEdit.php?rid=<?php echo $row_result['rid'];?>&test=<?php echo $row_result['test'];?>','StatusView','scrollbars=yes,resizable=yes,width=850,height=350')">Edit</a></td>        
+<?php } else { ?>
+					<!--Message (tooltip) Editing is timed out-->
+					<td bgcolor="#FFFDDA" title="Editing can only be done within&#10;one hour of data entry if &#10;order is not already paid."> * </td>
+<?php } ?>
+					<!-- Display test, result, and flag-->
+          <td nowrap><?php echo $row_result['test']; ?></td>
+          <td bg bgcolor="#FFFFFF" nowrap><?php echo $row_result['result']; ?></td>
+          <td nowrap><?php echo $row_result['normflag']; ?></td>   
+        </tr>
+<?php } while ($row_result = mysql_fetch_assoc($result));?> 
+				<tr>
+        	<td colspan="3" align="center" title="Deletion can only be done within&#10;one hour of data entry if &#10;order is not already paid.">------------------*</td>
+        </tr>
+<!--Add time limit to Delete Result-->
+<?php if(strtotime(Date('Y-m-d H:i:s')) - strtotime($row_orders['entrydt']) < 3600  && ($row_orders['amtpaid'] == 0 OR is_null($row_orders['amtpaid']) )) { ?>
+				<tr>
+					<!--Link to Delete result-->
+        	<td colspan="3" bgcolor="#FFCCFF"><a href="javascript:void(0)" onclick="MM_openBrWindow('POCREdelete.php?ordid=<?php echo $row_orders['ordid'];?>','StatusView','scrollbars=yes,resizable=yes,width=850,height=350')">Delete Order and Tests</a></td>
+        </tr>
+<?php }	?>
+		</table>
+    </td>       
+<?php } while ($row_orders = mysql_fetch_assoc($orders));?> 
+      </table>
+    </td>  
+
+
+<?php } else { ?>
+<!--Display previous results for this visit if test is NOT dipstick 11-->   
+    <td valign="top">
+    	<table  bgcolor="#faebd7">
+        <tr>
+          <td nowrap align="center" class="BlueBold_14">Previous Results<br />for this visit</td>
+	      </tr>      
+  <?php do {?>
+      	<tr>
+
+<?php  //query to get test result by order number in result table
+ 		$query_result = "SELECT r.id rid, r.result, r.normflag, r.entrydt, r.ordid, t.test FROM results r join tests t on r.testid = t.id WHERE r.ordid = '".$row_orders['ordid']."'";
+		$result = mysql_query($query_result, $swmisconn) or die(mysql_error());
+		$row_result = mysql_fetch_assoc($result);
+		$totalRows_result = mysql_num_rows($result);
+?>  
+ 	<!--//date format requires creating a variable--> 
+  <?php $date=date_create($row_result['entrydt'])?>
+<!--Loop to display previous orders -->  
+<?php do { ?>
+      	<tr>
+  				<td><span class="BlackBold_14"> <?php echo date_format($date, 'D M d, Y'); ?></span><br /><span class="Black_11"><?php echo date_format($date, 'h:i a'); ?></span></td>
+
+<!--Add time limit to Edit Result-->
+<?php if(strtotime(Date('Y-m-d H:i:s')) - strtotime($row_orders['entrydt']) < 3600  && ($row_orders['amtpaid'] == 0 OR is_null($row_orders['amtpaid']) )) { ?>
+ 				<!--Link to Edit result-->
+        <td bgcolor="FFFDDA"><a href="javascript:void(0)" onclick="MM_openBrWindow('POCREEdit.php?rid=<?php echo $row_result['rid'];?>&test=<?php echo $row_result['test'];?>','StatusView','scrollbars=yes,resizable=yes,width=850,height=350')">Edit</a></td>        
+<?php } else { ?>
+					<!--Message (tooltip) Editing is timed out-->
+					<td bgcolor="#FFFDDA" title="Deletion can only be done within&#10;one hour of data entry if &#10;order is not already paid."> * </td>
+<?php } ?>
+          <td  title="Order ID: <?php echo $row_orders['ordid'];?>&#10;Fee ID: <?php echo $row_orders['feeid'];?>&#10;GetFee ID: <?php echo $_GET['feeid'];?>"> <strong><?php echo $row_result['test'];?></strong></td>
+       		<td bgcolor="#FFFFFF"><?php echo $row_result['result'];?> </td>
+          <td nowrap><?php echo $row_result['normflag']; ?></td>   
+
+<!--Add time limit to Edit Result-->
+<?php if(strtotime(Date('Y-m-d H:i:s')) - strtotime($row_orders['entrydt']) < 3600  && ($row_orders['amtpaid'] == 0 OR is_null($row_orders['amtpaid']) )) { ?>
+
+					<!--Link to Delete result-->
+          <td nowrap bgcolor="#FFCCFF"><a href="javascript:void(0)" onclick="MM_openBrWindow('POCREdelete.php?ordid=<?php echo $row_orders['ordid'];?>','StatusView','scrollbars=yes,resizable=yes,width=850,height=350')">Del</a></td>   
+<?php } else { ?>
+					<!--Message (tooltip) Deleting is timed out-->
+					<td bgcolor="#FFCCFF" title="Deletion can only be done within&#10;one hour of data entry if &#10;order is not already paid."> * </td>
+<?php } ?>
+        </tr>
+<?php } while ($row_result = mysql_fetch_assoc($result));?> 
+       
+<?php } while ($row_orders = mysql_fetch_assoc($orders));?> 
+      </table>
+
+<?php } ?>
   </tr>
 </table>
+
 
 </body>
 </html>

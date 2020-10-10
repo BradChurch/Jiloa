@@ -67,10 +67,18 @@
   </tr>
 
   <tr>
-    <td bgcolor="#FFFFFF" class="BlueBold_14"><a href="AnestDrugView.php">Anesthetic Drug Setup</a></td>
+    <td height="20" bgcolor="#FFFFFF" class="BlueBold_14"><a href="AnestDrugView.php">Anesthetic Drug Setup</a></td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
   </tr>
+<?php if($_SESSION['user'] == 'GRACE ADMIN' || 'L.GABRIELSE'){?>
+  <tr>
+    <td bgcolor="#FFFFFF" class="BlueBold_14"><a href="employeesView.php">Employees Setup</a></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+<?php }?>
+
 <?php if($_SESSION['user'] == 'GRACE ADMIN' || 'L.GABRIELSE'){?>
   <tr>
     <td bgcolor="#FFFFFF" class="BlueBold_14"><a href="../../Development/DevProjectView.php">Development Tracking</a></td>

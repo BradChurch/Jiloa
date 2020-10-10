@@ -67,7 +67,7 @@ if ((isset($_POST['dob']) && $_POST['dob'] > '1914-01-01')  || (isset($_POST['ag
 		}
 
 if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formppa")) {
-  $insertSQL = sprintf("INSERT INTO patperm (hospital, active, entrydt, entryby, lastname, firstname, othername, gender, ethnicgroup, dob, est) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+  $insertSQL = sprintf("INSERT INTO patperm (hospital, active, entrydt, entryby, lastname, firstname, othername, gender, ethnicgroup, employeegroup, dob, est) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                        GetSQLValueString($_POST['hospital'], "text"),
                        GetSQLValueString($_POST['active'], "text"),
                        GetSQLValueString($_POST['entrydt'], "date"),
@@ -77,6 +77,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formppa")) {
                        GetSQLValueString($_POST['othername'], "text"),
                        GetSQLValueString($_POST['gender'], "text"),
                        GetSQLValueString($_POST['ethnicgroup'], "text"),
+                       GetSQLValueString($_POST['employeegroup'], "text"),
                        GetSQLValueString($calcdob, "date"),
                        GetSQLValueString($est, "text"));
 
@@ -153,6 +154,13 @@ $amtdue = $row_Fee['fee']*($_POST['rate']/100);
 		$totalRows_ethnicddl = mysql_num_rows($ethnicddl);
 ?>
 
+<?php 	mysql_select_db($database_swmisconn, $swmisconn);
+		$query_employeeddl = "Select list, name, seq from dropdownlist where list = 'Employee Group' Order By seq";
+		$employeeddl = mysql_query($query_employeeddl, $swmisconn) or die(mysql_error());
+		$row_employeeddl = mysql_fetch_assoc($employeeddl);
+		$totalRows_employeeddl = mysql_num_rows($employeeddl);
+?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -219,6 +227,27 @@ do {
 ?>
     </select>    </td>
     </tr>
+
+  <tr>
+    <td class="subtitlebl" align="right">Employee Group:</td>
+    <td title="e.g PH = Peace House, CA = CalvaryArrows"><select name="employeegroup" id="employeegroup" type="text" >
+	<option value="0">None</option>
+      <?php
+do {  
+?>
+      <option value="<?php echo $row_employeeddl['name']?>"><?php echo $row_employeeddl['name']?></option>
+      <?php
+} while ($row_employeeddl = mysql_fetch_assoc($employeeddl));
+  $rows = mysql_num_rows($employeeddl);
+  if($rows > 0) {
+      mysql_data_seek($employeeddl, 0);
+	  $row_employeeddl = mysql_fetch_assoc($employeeddl);
+  }
+?>
+    </select> 
+    If this is a dependent, save as None and go to edit this patient to link this patient to the employee.</td>
+    </tr>
+
   <tr>
     <td class="subtitlebl" align="right" title="If DOB and AGE are blank, patient record will not be added&#10;DOB must have Year dash Month dash Day Format&#10;Age must be a number between 1 and 100 &#10; Newborns or children under 1 year must have DOB">Date of Birth:</td>
     <td nowrap="nowrap"  title="If DOB and AGE are blank, patient record will not be added&#10;DOB must have Year dash Month dash Day Format&#10;Age  must be a number between 1 and 100 &#10; Newborns or children under 1 year must have DOB"><input name="dob" type="text" id="dob" data-validation="date" data-validation-optional="true" data-validation-error-msg="Invalid date" />

@@ -311,8 +311,8 @@ $totalRows_surgs = mysql_num_rows($surgs);
 <!-- display POC Select-->
     <?php
 		// if(allow(30,1) == 1) { ?>
-    <td><div align="center">
-      <input type="button" name="button" class="btngradblu50" value=" POC " onclick="parent.location='PatShow1.php?mrn=<?php echo $_SESSION['mrn']; ?>&vid=<?php echo $_SESSION['vid']; ?>&visit=PatVisitView.php&act=poc&pge=POCSelect.php'" />
+    <td title="Point of Care Testing"><div align="center">
+      <input type="button" name="button" class="btngradblu50" value=" POCT " onclick="parent.location='PatShow1.php?mrn=<?php echo $_SESSION['mrn']; ?>&vid=<?php echo $_SESSION['vid']; ?>&visit=PatVisitView.php&act=poc&pge=POCSelect.php'" />
     </div></td>
     <?php //}?>
 

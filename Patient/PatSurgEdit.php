@@ -262,7 +262,7 @@ $('#scheddt').datetimepicker({
 </head>
 <body>
 
-<div align="right"> <span class="Black_12">Visit Date: </span><span class="BlackBold_16"><?php echo $row_surgupdate['visitdate'] ?></span><?php echo str_repeat("&nbsp;", 15);?> <span class="BlueBold_24">UPDATE SURGERY</span> 
+<div align="right"> <span class="Black_12">Visit Date: </span><span class="BlackBold_16"><?php echo $row_surgupdate['visitdate'] ?></span><?php echo str_repeat("&nbsp;", 15);?> <span class="BlueBold_24">UPDATE SURGERY  <a href="../../InstructionDocs/Surgery-Anaesthesia BMC MIS.htm" target="_blank">+++</a> </span> 
          <!--  link to Anesthersia page-->
         <span><?php echo str_repeat("&nbsp;", 15);?></span>
         <span><a href="PatShow1.php?mrn=<?php echo $row_surgupdate['medrecnum'] ?>&vid=<?php echo $row_surgupdate['visitid'] ?>&sid=<?php echo $row_surgupdate['sid'] ?>&visit=PatVisitView.php&act=lab&pge=PatAnestPreopEdit.php"  style="background-color:green; border-color:blue; color:white; text-align:center; border-radius:5px;" class="BlueBold_24">Anest Preop</a></span>&nbsp;&nbsp;
